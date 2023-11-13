@@ -34,7 +34,10 @@ public class TomAndJerryChaseGame extends JFrame implements ActionListener, KeyL
     private ImageIcon backgroundIcon;
 
     private JLabel scoreLabel;
+    private JLabel gameOverLabel;
+    private JLabel winLabel;
     private JButton closeButton;
+    private JButton playAgainButton;
 
     private WelcomeScreen welcomeScreen;
     private GameScreen gameScreen;
@@ -117,6 +120,33 @@ public class TomAndJerryChaseGame extends JFrame implements ActionListener, KeyL
         scoreLabel.setAlignmentY(TOP_ALIGNMENT);
 
         gameScreen.add(scoreLabel);
+        
+        gameOverLabel = new JLabel();
+        gameOverLabel.setBounds(170, 80, 300, 300);
+        gameOverLabel.setIcon(new ImageIcon("Resources/game over.png"));
+        gameScreen.add(gameOverLabel);
+        gameOverLabel.setVisible(false);
+        
+        winLabel = new JLabel();
+        winLabel.setBounds(155, 70, 360, 360);
+        winLabel.setIcon(new ImageIcon("Resources/win.png"));
+        gameScreen.add(winLabel);
+        winLabel.setVisible(false);
+        
+        playAgainButton = new JButton("Play Again");
+        playAgainButton.setFont(new Font("Arial", Font.BOLD, 20));
+        playAgainButton.setBackground(Color.GREEN);
+        playAgainButton.setForeground(Color.WHITE);
+        playAgainButton.setBorderPainted(false);
+        playAgainButton.setFocusPainted(false);
+        playAgainButton.setBounds(getWidth() / 2 - 75, getHeight() / 2 - 50, 150, 50);
+        playAgainButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                restartGame();
+            }
+        });
+        playAgainButton.setVisible(false);
+        gameScreen.add(playAgainButton);
 
         closeButton = new JButton("Close");
         closeButton.setFont(new Font("Arial", Font.BOLD, 20));
@@ -124,7 +154,7 @@ public class TomAndJerryChaseGame extends JFrame implements ActionListener, KeyL
         closeButton.setForeground(Color.WHITE);
         closeButton.setBorderPainted(false);
         closeButton.setFocusPainted(false);
-        closeButton.setBounds(getWidth() / 2 - 75, getHeight() / 2 - 50, 150, 50);
+        closeButton.setBounds(getWidth() / 2 - 75, getHeight() / 2, 150, 50);
         closeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -135,6 +165,23 @@ public class TomAndJerryChaseGame extends JFrame implements ActionListener, KeyL
 
         
         requestFocus();
+    }
+    private void restartGame() {
+
+        // Clear existing labels and buttons
+        gameScreen.remove(tomLabel);
+        gameScreen.remove(jerryLabel);
+        gameScreen.remove(cheeseLabel);
+        gameScreen.remove(trapLabel);
+        gameScreen.remove(holeLabel);
+        gameScreen.remove(scoreLabel);
+        gameScreen.remove(closeButton);
+        gameScreen.remove(playAgainButton);
+        gameScreen.remove(gameOverLabel);
+        gameScreen.remove(winLabel);
+
+        startGame();
+        repaint();
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -216,17 +263,16 @@ public class TomAndJerryChaseGame extends JFrame implements ActionListener, KeyL
 
         if (tomRect.contains(jerryRect) || jerryRect.contains(tomRect)) {
             timer.stop();
-            JLabel gameOverLabel = new JLabel(new ImageIcon("Resources/game over.png"));
-            gameScreen.add(gameOverLabel);
             gameOverLabel.setVisible(true);
+            playAgainButton.setVisible(true);
             closeButton.setVisible(true);
         }
 
         if (tomRect.intersects(jerryRectForTrap)) {
             timer.stop();
-            JLabel gameOverLabel = new JLabel(new ImageIcon("Resources/game over.png"));
-            gameScreen.add(gameOverLabel);
+         
             gameOverLabel.setVisible(true);
+            playAgainButton.setVisible(true);
             closeButton.setVisible(true);
         }
     }
@@ -244,9 +290,8 @@ public class TomAndJerryChaseGame extends JFrame implements ActionListener, KeyL
         }
         if (score >= 15 && jerryRect.intersects(holeRect)) {
             timer.stop();
-            JLabel winLabel = new JLabel(new ImageIcon("Resources/win.png"));
-            gameScreen.add(winLabel);
             winLabel.setVisible(true);
+            playAgainButton.setVisible(true);
             closeButton.setVisible(true);
         }
     }
